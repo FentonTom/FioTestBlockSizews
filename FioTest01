@@ -1,0 +1,22 @@
+#!/bin/bash
+
+FNAME="--filename=/dev/sdb"
+RUNX="--runtime=300"
+# $RUNX="--size=100%"
+BS="4k"
+RW="--rw=randread"
+rm FioTest.out
+
+
+for J in "--rw=read" "--rw=write" "--rw=randread" "--rw=randwrite"
+do
+        for I in 4 8 16 32 64 128 512 1024 2048 4096 
+        do
+                echo "testing $I K block size $J "
+                echo "testing $I K block size $J " >> FioTest.out
+                # fio $FNAME $RUNX --rw=$J --bs="$I"K --ioengine=libaio --iodepth=8 --numjobs=4 --group_reporting --name=FIO_TEST  > Tmp.FioTest.out
+                fio $FNAME $RUNX $J --bs="$I"K --ioengine=libaio --iodepth=8 --numjobs=4 --group_reporting --name=FIO_TEST  > Tmp.FioTest.out
+                tail -5 Tmp.FioTest.out | head -2 >> FioTest.out 
+        done
+done
+echo "Run finsished"
